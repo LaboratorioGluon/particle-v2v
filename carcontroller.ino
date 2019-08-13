@@ -9,16 +9,26 @@ UltraSoundSensor Sensor(D3, D6);
 
 unsigned long int lastTime;
 int periodMillis = 200;
+int maxCarSpeed;
+
+void caution_speed_event(const char *event, const char *data){
+    pSetSpeed(data);
+}
 
 void setup() {
     
     Car.Init();
     Sensor.Init();
     
+    Particle.variable("MaximumSpeed", maxCarSpeed);
+    
     Particle.function("setDirection", pChangeDir);
     Particle.function("setMode", pSetMode);
     Particle.function("SensorTest", pSensorTest);
     Particle.function("Speed", pSetSpeed);
+    
+    
+    Particle.subscribe("cautionspeed", caution_speed_event, MY_DEVICES);
 }
 
 
@@ -27,10 +37,11 @@ void loop() {
     Car.Move();
     
     if( Sensor.Measure() < 10.0f){
-        Particle.publish("motion-detected", PUBLIC);
+        Particle.publish("cautionspeed","70", PUBLIC);
         pSetMode("simple");
     }
         
+    maxCarSpeed = Car.getMaxSpeed();
         
     elapsed = millis() - lastTime;
     if ( elapsed < periodMillis )

@@ -97,6 +97,7 @@ public:
     int setModeRoute(){ modo = MODE::ROUTE; return (int)modo;}
     int setModeSimple() { modo = MODE::SIMPLE;return (int)modo; }
     int setMaxSpeed(int m){ maxSpeed = m; return m;}
+    int getMaxSpeed(){ return maxSpeed; }
     
 };
 
